@@ -1,23 +1,26 @@
-
-import Employer from '../models/employer.js';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import Employer from "../models/employer.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export const registerEmployer = async (req, res) => {
   try {
-    const { companyName, email, contactPerson, phone, industry, companySize, website, password } = req.body;
-
-    // Check if email already exists
+    const {
+      companyName,
+      email,
+      contactPerson,
+      phone,
+      industry,
+      companySize,
+      website,
+      password,
+    } = req.body;
     const existingEmployer = await Employer.findOne({ email });
-    if (existingEmployer) {
+    if (existingEmployer)
       return res.status(400).json({ message: "Email already registered" });
-    }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new employer
-    const employer = new Employer({
+    const employer = await Employer.create({
       companyName,
       email,
       contactPerson,
@@ -28,43 +31,40 @@ export const registerEmployer = async (req, res) => {
       password: hashedPassword,
     });
 
-    await employer.save();
-
-    // Generate JWT token
-    const token = jwt.sign({ id: employer._id }, process.env.JWT_SECRET || "your_jwt_secret", { expiresIn: "1d" });
-
-    // Send token back
+    const token = jwt.sign(
+      { id: employer._id },
+      process.env.JWT_SECRET || "your_jwt_secret",
+      { expiresIn: "1d" }
+    );
     res.status(201).json({ token });
   } catch (err) {
-    console.error("Error in registration:", err);
+    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
 export const loginEmployer = async (req, res) => {
-  const {email, password}= req.body;
-  try{
+  try {
+    const { email, password } = req.body;
+    const employer = await Employer.findOne({ email });
+    if (!employer)
+      return res
+        .status(400)
+        .json({ status: "fail", message: "Employer not found" });
 
-  const employer = await Employer.findOne({email});
+    const isMatch = await bcrypt.compare(password, employer.password);
+    if (!isMatch)
+      return res
+        .status(400)
+        .json({ status: "fail", message: "Wrong Password" });
 
-  if(!employer){
-    return res.status(400).json({status:"fail", message: "Employer not found"});
+    const token = jwt.sign(
+      { id: employer._id },
+      process.env.JWT_SECRET || "your_jwt_secret",
+      { expiresIn: "1d" }
+    );
+    res.json({ token });
+  } catch (err) {
+    res.status(500).json({ message: `Server error ${err}` });
   }
-
-  const isPasswordMatch = await bcrypt.compare(password, employer.password);
-
-  if(!isPasswordMatch){
-    return res.status(400).json({status:"fail", message: "Wrong Password"});
-  }
-
-  res.json({
-token: jwt.sign({ id: employer._id }, process.env.JWT_SECRET || "your_jwt_secret", { expiresIn: "1d" })
-  })
-  
-  }
-   catch(err){
-    res.status(500).json({messae: `server eror ${err}`})
-  }
-}
-
-
+};

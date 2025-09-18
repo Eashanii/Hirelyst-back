@@ -1,13 +1,16 @@
 // middleware/errorHandler.js
 
 const errorHandler = (err, req, res, next) => {
-  const statusCode = res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
+  // Use existing status code or default to 500
+  const statusCode =
+    res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
 
-  // Sending error response
+  // Send JSON response with error message and stack trace
   res.status(statusCode).json({
     message: err.message || "Internal Server Error",
-    stack: process.env.NODE_ENV === "production" ? "🥞" : err.stack,  // Hide stack trace in production
+    stack: process.env.NODE_ENV === "production" ? "🥞" : err.stack, // Hide stack trace in production
   });
 };
 
-module.exports = errorHandler;
+// Export as ESM default export
+export default errorHandler;

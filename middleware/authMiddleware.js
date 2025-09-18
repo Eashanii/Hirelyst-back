@@ -1,4 +1,5 @@
-const jwt = require("jsonwebtoken");
+// middleware/authMiddleware.js
+import jwt from "jsonwebtoken";
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -10,12 +11,15 @@ const authenticateToken = (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret");
-    req.userId = decoded.id; // Assuming token has { id: employer._id }
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || "your_jwt_secret"
+    );
+    req.user = decoded; // attach decoded info to request
     next();
   } catch (err) {
     return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
 
-module.exports = authenticateToken;
+export default authenticateToken;

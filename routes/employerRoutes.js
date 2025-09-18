@@ -1,11 +1,13 @@
-const express = require("express");
+import express from "express";
+import Employer from "../models/employer.js";
+import authenticateToken from "../middleware/authMiddleware.js";
+import {
+  registerEmployer,
+  loginEmployer,
+} from "../controllers/employerController.js";
+import { loginAdmin } from "../controllers/adminController.js";
+
 const router = express.Router();
-const Employer = require("../models/employer");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const authenticateToken = require("../middleware/authMiddleware"); // your JWT middleware
-const { registerEmployer, loginEmployer } = require("../controllers/employerController");
-const { loginAdmin } = require("../controllers/adminController");
 
 // POST /api/employers — registration route
 router.post("/registerEmployer", registerEmployer);
@@ -15,9 +17,8 @@ router.post("/loginEmployer", loginEmployer);
 router.get("/me", authenticateToken, async (req, res) => {
   try {
     const employer = await Employer.findById(req.userId).select("-password");
-    if (!employer) {
+    if (!employer)
       return res.status(404).json({ message: "Employer not found" });
-    }
     res.json(employer);
   } catch (err) {
     console.error("Error fetching employer:", err);
@@ -25,4 +26,4 @@ router.get("/me", authenticateToken, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
