@@ -1,3 +1,4 @@
+// models/job.js
 import mongoose from "mongoose";
 
 const jobSchema = new mongoose.Schema(
@@ -7,11 +8,9 @@ const jobSchema = new mongoose.Schema(
     category: { type: String },
     location: { type: String },
     qualifications: [String],
-    // createdBy: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Employer",
-    //   required: true,
-    // },
+    experience: String, // Added
+    jobType: String, // Added
+    workPreference: String, // Added
     salary: { type: String },
     expiry_date: { type: Date },
   },

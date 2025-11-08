@@ -1,3 +1,4 @@
+//routes/employerRoutes.js
 import express from "express";
 import Employer from "../models/employer.js";
 import authenticateToken from "../middleware/authMiddleware.js";

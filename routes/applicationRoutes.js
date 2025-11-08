@@ -1,14 +1,10 @@
+// routes/applicationRoutes.js
 import express from "express";
 import {
   createApplication,
-  getApplications,
-  updateApplication,
+  getApplicationsBySeeker,
 } from "../controllers/applicationController.js";
-
 const router = express.Router();
-
-router.post("/", createApplication); // Apply for a job
-router.get("/", getApplications); // Get all applications
-router.put("/:id", updateApplication); // Update application status
-
+router.post("/", createApplication);
+router.get("/seeker/:seekerId", getApplicationsBySeeker);
 export default router;

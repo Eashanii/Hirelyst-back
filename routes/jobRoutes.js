@@ -1,11 +1,11 @@
+// routes/jobRoutes.js
 import express from "express";
-import { addJob, getJobs } from "../controllers/jobController.js";
+import { getJobs, createJob, deleteJob } from "../controllers/jobController.js";
 
 const router = express.Router();
 
-router.post("/addJob", addJob); // Create a new job
-router.get("/getJobs", getJobs); // Get all jobs
+router.get("/getJobs", getJobs); // ✅ Anyone (admin/seeker) can fetch all jobs
+router.post("/createJob", createJob); // ✅ Admin adds job
+router.delete("/:id", deleteJob); // ✅ Admin deletes job
 
 export default router;
-//api/jobs/getJobs
-//api/jobs/addJob

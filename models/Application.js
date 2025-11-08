@@ -1,3 +1,4 @@
+//Application.js
 import mongoose from "mongoose";
 
 const applicationSchema = new mongoose.Schema(
@@ -17,8 +18,6 @@ const applicationSchema = new mongoose.Schema(
       enum: ["pending", "reviewed", "shortlisted", "rejected", "accepted"],
       default: "pending",
     },
-    coverLetter: String,
-    resume: String,
   },
   { timestamps: true }
 );

@@ -1,3 +1,4 @@
+//controllers/notificationController.js
 import Notification from "../models/Notification.js";
 
 export const createNotification = async (req, res) => {
